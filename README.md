@@ -23,6 +23,8 @@ This is an automated Telegram bot designed to assist teachers in Kazakhstan. It 
 3.  **Scenario A (Advice):** Queries Pinecone Vector Store -> Generates text answer.
 4.  **Scenario B (Document):** Fetches template -> Fills data from Sheets -> Converts HTML to PDF -> Sends file.
 
+![Mugalim AI Logo](photo.png)
+
 ## 📦 Installation
 1.  Import the `workflow.json` file into your n8n instance.
 2.  Set up credentials for: Telegram, OpenAI, Pinecone, Google Sheets.
