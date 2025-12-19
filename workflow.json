@@ -1,0 +1,832 @@
+{
+  "name": "Final Project",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2544,
+        3520
+      ],
+      "id": "82e2dc31-2151-4c12-ac23-cf51cb277ed2",
+      "name": "Telegram Trigger",
+      "webhookId": "1f240473-80fa-4a8d-9335-8a7d2532645a",
+      "credentials": {
+        "telegramApi": {
+          "id": "2WxZjLKEYr9lZnBj",
+          "name": "Mugalim bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1488,
+        3840
+      ],
+      "id": "e500dc82-0132-4262-a0e0-dc131577a1dc",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "aP8Z5QZAAfMjpskQ",
+          "name": "Daulet Api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "html_content": "={{ $json.output }}",
+        "css_content": "={{ $json.output }}",
+        "output_format": "file",
+        "output_filename": "Mugalim_document"
+      },
+      "type": "n8n-nodes-htmlcsstopdf.htmlcsstopdf",
+      "typeVersion": 1,
+      "position": [
+        48,
+        3536
+      ],
+      "id": "d2e56b1a-37a8-4fb7-bbfc-d29c4c6b6daf",
+      "name": "HTML to PDF1",
+      "credentials": {
+        "htmlcsstopdfApi": {
+          "id": "eHPHeTATeQSphAvm",
+          "name": "HTML to PDF account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "<",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "id": "a3b43b69-59ac-46be-81e3-6f9e5a95b956"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "HTML"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "48e7dc59-e6f2-4171-b3ea-727fa4ac84db",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "<",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notStartsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -304,
+        3616
+      ],
+      "id": "6be8a847-6692-4434-b6d8-261c28a7dc1b",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "43d4874a-4b0c-4378-8254-475771d3fc65",
+              "name": "text",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        3712
+      ],
+      "id": "c0cf8ce0-af3f-4d51-97cd-8d8da317713c",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "model": "sonar-pro",
+        "messages": {
+          "message": [
+            {
+              "content": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('message0_Text', ``, 'string') }}"
+            }
+          ]
+        },
+        "simplify": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Simplify_Output', ``, 'boolean') }}",
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexityTool",
+      "typeVersion": 1,
+      "position": [
+        -1232,
+        3840
+      ],
+      "id": "7f5d2ab0-22d6-465d-a1b6-c64cdf56e7ac",
+      "name": "ЧАТ1",
+      "credentials": {
+        "perplexityApi": {
+          "id": "PkUaTANtSRNHHx2K",
+          "name": "Perplexity account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "You are a polite, professional, and helpful AI Assistant designed specifically for teachers in Kazakhstan. Your main goal is to assist with professional questions, certification (attestation), book recommendations, and automatic document generation.\n\nLANGUAGE & TONE:\n- **Chat/Conversation:** Reply in the SAME language as the user (Kazakh or Russian).\n- **Document Generation:** The content of the document must ALWAYS be in the **KAZAKH** language, regardless of the user's language.\n\nBOUNDARIES:\n- You ONLY answer questions related to pedagogy, school administration, teaching methodology, and document generation.\n- If a user asks about unrelated topics, politely refuse.\n\nTOOLS & RESOURCES:\n1. **Pinecone Vector Store:** For teacher categories and book recommendations.\n2. **Google Sheets Tools:** For retrieving user/student data.\n3. **Search Tool:** To find official templates on 'adilet.zan.kz'.\n\nINSTRUCTIONS BY SCENARIO:\n\nSCENARIO 1: HELP & KNOWLEDGE (Category, Books, Advice)\n- Always use the `Pinecone Vector Store` first.\n- **OUTPUT FORMAT:** Return a clear, helpful **plain text** response in the user's language. Do NOT generate HTML.\n\nSCENARIO 2: DOCUMENT CREATION (e.g., \"Create KKP\", \"Сделай документ\")\n- If the user asks to generate a document:\n  1. Find the official template using the Search Tool (adilet.zan.kz).\n  2. Retrieve necessary data from Google Sheets.\n  3. **CRITICAL RULE:** Translate/Ensure the document content is in **KAZAKH LANGUAGE**.\n  4. **OUTPUT FORMAT:** You MUST generate a valid **HTML code** string.\n     - **CLEAN OUTPUT:** The HTML must contain ONLY the document text (tables, headers, content).\n     - **NO LINKS:** Do not include external links or \"Source: ...\" inside the document.\n     - **NO CHAT:** Do not include conversational text like \"Here is your file\" inside the HTML.\n     - **ENCODING:** Must include `<meta charset=\"UTF-8\">`.\n     - **STYLING:** Use simple, professional styling (black text, white background, Times New Roman font).\n     - **Start immediately with `<html>`**.\n\nSCENARIO 3: GENERAL CHAT\n- Respond with **plain text** in the user's language.\n\nSUMMARY OF OUTPUT RULES:\n- Question about pedagogy -> Plain Text (User's language).\n- Request for document -> HTML Code (Content in **Kazakh** only, no links, no extra text)."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1248,
+        3616
+      ],
+      "id": "95bf8d45-f8de-414b-835c-3344ea2de706",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pPlIQ9lOpw1utRMEpB2EoOYbWUD4kkSl1pRMB96FC34",
+          "mode": "list",
+          "cachedResultName": "Новая таблица",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pPlIQ9lOpw1utRMEpB2EoOYbWUD4kkSl1pRMB96FC34/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 474160371,
+          "mode": "list",
+          "cachedResultName": "ККП",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pPlIQ9lOpw1utRMEpB2EoOYbWUD4kkSl1pRMB96FC34/edit#gid=474160371"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -1104,
+        3840
+      ],
+      "id": "6ea3aefa-d57d-44fd-ac00-3335db6c30b1",
+      "name": "read_kkp_sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HULWbcwLGEfSkMIB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pPlIQ9lOpw1utRMEpB2EoOYbWUD4kkSl1pRMB96FC34",
+          "mode": "list",
+          "cachedResultName": "Новая таблица",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pPlIQ9lOpw1utRMEpB2EoOYbWUD4kkSl1pRMB96FC34/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Аттестация школьников",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pPlIQ9lOpw1utRMEpB2EoOYbWUD4kkSl1pRMB96FC34/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -976,
+        3840
+      ],
+      "id": "86a745ea-a944-4a4a-a695-3f5365d804c1",
+      "name": "read_students_sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HULWbcwLGEfSkMIB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        -1872,
+        3520
+      ],
+      "id": "dc2dc34a-c7b4-4e18-b5d2-80f3fcdf786b",
+      "name": "Transcribe a recording1",
+      "credentials": {
+        "openAiApi": {
+          "id": "aP8Z5QZAAfMjpskQ",
+          "name": "Daulet Api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2096,
+        3520
+      ],
+      "id": "7323104e-19b3-4559-a629-d0e00c315a89",
+      "name": "Get a file",
+      "webhookId": "55704055-f530-4efa-a8d6-90ec9b7b39c6",
+      "credentials": {
+        "telegramApi": {
+          "id": "2WxZjLKEYr9lZnBj",
+          "name": "Mugalim bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5fb617c8-3ff8-4eb8-9b04-5cd42629fea0",
+              "name": "text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1872,
+        3712
+      ],
+      "id": "a6b055de-0c41-4236-bf96-9cdcb699f134",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "content": "## Распознавать сообщение клиента \nЭтот Section для распознавать сообщение клиента(текст или голосовой аудио)",
+        "height": 688,
+        "width": 944
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2592,
+        3248
+      ],
+      "id": "3b284c9f-c914-4602-b771-2cb8175bc95a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Процесс PDF документ\nЭтот Section для делать PDF документ",
+        "height": 704,
+        "width": 944,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1536,
+        3472
+      ],
+      "id": "a498b7d9-5727-4516-840f-4d5f109a4c05",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Отправлять готовый документ\nЭтот Section для отправки готовый документа на клиенту которому он спрашивал",
+        "height": 608,
+        "width": 1104,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        3360
+      ],
+      "id": "d93bc8ba-82ad-4592-ac5e-4eeb436af222",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "id": "10398b89-59b8-4b82-94a6-b61e1066921e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "start"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "be3ae4e8-94ca-4dcb-b87c-71d60f762475",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2873b729-0e02-4bec-936c-8d1d8273881a",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -2320,
+        3504
+      ],
+      "id": "e0082e9b-87d3-47d4-abc6-4797e7b0b3c9",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Добро пожаловать AI Mugalim!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2096,
+        3328
+      ],
+      "id": "2300be11-21cd-4e93-a3a0-ab4be6a1c6f7",
+      "name": "Приветсвие клиента",
+      "webhookId": "40e05f3a-045b-45e2-bdd4-252bc75c1b68",
+      "credentials": {
+        "telegramApi": {
+          "id": "2WxZjLKEYr9lZnBj",
+          "name": "Mugalim bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "tableName": "Ai_mugalim",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -1360,
+        3840
+      ],
+      "id": "dafaeabc-daf4-4a97-887b-2da2346c4805",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "uRnNRQRwBPC4cddT",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        144,
+        3712
+      ],
+      "id": "20491638-a71d-46e3-bc76-0dbf8f73f22e",
+      "name": "Отправить сообщение",
+      "webhookId": "5872c0af-9542-4947-8b65-edfd0af671c7",
+      "credentials": {
+        "telegramApi": {
+          "id": "2WxZjLKEYr9lZnBj",
+          "name": "Mugalim bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Work with your data in Pinecone vector store",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "n8n-final",
+          "mode": "list",
+          "cachedResultName": "n8n-final"
+        },
+        "topK": 3,
+        "options": {
+          "pineconeNamespace": "final"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        -848,
+        3840
+      ],
+      "id": "7f6ef1c0-8ecd-43e6-b624-5719691b6f75",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "qnlHGLue31INRSUt",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -768,
+        4048
+      ],
+      "id": "fa3fe22d-d173-490e-8b6e-269139648010",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "aP8Z5QZAAfMjpskQ",
+          "name": "Daulet Api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        3536
+      ],
+      "id": "b31b6b7e-1bb0-4a94-b9cb-41a500e474a5",
+      "name": "Send a document",
+      "webhookId": "528f27f3-858b-4603-a47a-67baf0701c96",
+      "credentials": {
+        "telegramApi": {
+          "id": "2WxZjLKEYr9lZnBj",
+          "name": "Mugalim bot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "HTML to PDF1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ЧАТ1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "read_kkp_sheet1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "read_students_sheet1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Отправить сообщение",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Приветсвие клиента",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML to PDF1": {
+      "main": [
+        [
+          {
+            "node": "Send a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9486e8db-6275-4a1b-864f-40ca68511262",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aa576a08f1ab1040c643aa2fdddba94ccd05c02fd02c8e2ebe12c22089f92ac2"
+  },
+  "id": "hD7TwCYFFqT2W1ZQ",
+  "tags": []
+}
