@@ -1,5 +1,5 @@
 # 📚 Mugalim AI Assistant (Teacher's Bot)
-**t.me/ai_mugalim_zhambyl_bot**
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/ai_mugalim_zhambyl_bot)
 
 ## 🎯 Description
 This is an automated Telegram bot designed to assist teachers in Kazakhstan. It helps reduce administrative workload by generating documents automatically and providing professional consultation regarding certification (attestation) and methodology.
